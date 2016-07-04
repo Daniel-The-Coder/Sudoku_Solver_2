@@ -29,7 +29,7 @@ public class Cell {
         return this.possibleValues;
     }
 
-    public void setPossibleValuesNull(){
+    public void setPossibleValuesEmpty(){
         this.possibleValues = new ArrayList<>();
     }
 

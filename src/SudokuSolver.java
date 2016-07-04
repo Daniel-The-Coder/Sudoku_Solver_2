@@ -30,6 +30,9 @@ public class SudokuSolver {
         for(int x=0;x<9;x++) {
             for (int y = 0; y < 9; y++) {
                 if (grid.get(x).get(y).getSolved()) {
+                    //set possible values list of solved cells to empty
+                    grid.get(x).get(y).setPossibleValuesEmpty();
+
                     int val = grid.get(x).get(y).getValue();
 
                     //ROW
@@ -79,11 +82,11 @@ public class SudokuSolver {
         }
 
 
-        for (int i=0;i<9;i++){
-            for (int j=0;j<9;j++){
-                System.out.println(grid.get(i).get(j).getPossibleValues().size());
-            }
-        }
+//        for (int i=0;i<9;i++){
+//            for (int j=0;j<9;j++){
+//                System.out.println("i: "+i+"  j: "+j+"  "+grid.get(i).get(j).getPossibleValues());
+//            }
+//        }
         return grid;
     }
 
@@ -101,6 +104,7 @@ public class SudokuSolver {
         for (int i=0;i<9;i++) {
             for (int j = 0; j < 9; j++) {
                 if(grid.get(i).get(j).getPossibleValues().size()==1){
+                    //System.out.println("found");
                     grid = simplifyPuzzleRec(grid,i,j,(Integer)grid.get(i).get(j).getPossibleValues().get(0));
                 }
             }
@@ -196,27 +200,30 @@ public class SudokuSolver {
      * @return
      */
     public static ArrayList<ArrayList<Cell>> simplifyPuzzleRec(ArrayList<ArrayList<Cell>> grid, int x, int y, int val){
-        System.out.println("simplifyPuzzleRec() called.");
+        //System.out.println("simplifyPuzzleRec() called.");
         grid.get(x).get(y).setValue(val);
         grid.get(x).get(y).setSolved();
-        grid.get(x).get(y).setPossibleValuesNull();
+        grid.get(x).get(y).setPossibleValuesEmpty();
 
         //eliminate this element (val) from every list in this row, column and 3x3 region.
 
         //ROW
         for (int i=0;i<9;i++){
-            grid.get(x).get(i).removeFromList(val);
-            if(grid.get(x).get(i).getPossibleValues().size()==1){
-                simplifyPuzzleRec(grid, x, i, (Integer)grid.get(x).get(i).getPossibleValues().get(0));
+            if(!grid.get(x).get(i).getSolved()) {
+                grid.get(x).get(i).removeFromList(val);
+                if (grid.get(x).get(i).getPossibleValues().size() == 1) {
+                    simplifyPuzzleRec(grid, x, i, (Integer) grid.get(x).get(i).getPossibleValues().get(0));
+                }
             }
-
         }
 
         //COLUMN
         for (int i=0;i<9;i++){
-            grid.get(i).get(y).removeFromList(val);
-            if(grid.get(i).get(y).getPossibleValues().size()==1){
-                simplifyPuzzleRec(grid, i, y, (Integer)grid.get(i).get(y).getPossibleValues().get(0));
+            if(!grid.get(i).get(y).getSolved()) {
+                grid.get(i).get(y).removeFromList(val);
+                if (grid.get(i).get(y).getPossibleValues().size() == 1) {
+                    simplifyPuzzleRec(grid, i, y, (Integer) grid.get(i).get(y).getPossibleValues().get(0));
+                }
             }
         }
 
@@ -247,9 +254,11 @@ public class SudokuSolver {
 
         for(int i=row1;i<=row2;i++) {
             for (int j = col1; j <= col2; j++) {
-                grid.get(i).get(j).removeFromList(val);
-                if(grid.get(i).get(j).getPossibleValues().size()==1){
-                    simplifyPuzzleRec(grid, i, j, (Integer)grid.get(i).get(j).getPossibleValues().get(0));
+                if (!grid.get(i).get(j).getSolved()) {
+                    grid.get(i).get(j).removeFromList(val);
+                    if (grid.get(i).get(j).getPossibleValues().size() == 1) {
+                        simplifyPuzzleRec(grid, i, j, (Integer) grid.get(i).get(j).getPossibleValues().get(0));
+                    }
                 }
             }
         }
@@ -261,18 +270,18 @@ public class SudokuSolver {
 
         // construct the initial configuration from the file
         SudokuConfig puzzle = new SudokuConfig(args[0]);
-        ArrayList<ArrayList<Cell>> grid = createGrid(puzzle.getGrid());
-
         System.out.println(puzzle);
 
-        Backtracker bt = new Backtracker(false);
+        ArrayList<ArrayList<Cell>> grid = createGrid(puzzle.getGrid());
 
         // start the clock
         double start = System.currentTimeMillis();
 
         // attempt to solve the puzzle
         Configuration init = new SudokuConfig(simplifyPuzzle(grid));
-        System.out.println("\nAfter simplification: \n\n"+init);
+        //System.out.println("\nAfter simplification: \n\n"+init);
+
+        Backtracker bt = new Backtracker(false);
         Optional<Configuration> sol = bt.solve(init);
 
         // compute the elapsed time
