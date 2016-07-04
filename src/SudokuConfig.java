@@ -31,6 +31,10 @@ public class SudokuConfig implements Configuration{
         this.col=0;
     }
 
+    public SudokuConfig(int[][] grid){
+        this.grid = grid;
+    }
+
     public SudokuConfig(SudokuConfig other){
         int[][] ar = new int[9][9];
         for (int i=0;i<9;i++) {
@@ -66,9 +70,6 @@ public class SudokuConfig implements Configuration{
                         else{
                             SC.col=j+1;
                         }
-                        //System.out.println("row: "+i+"    col: "+j+"    element: "+k);
-                        //System.out.println(SC);
-                        //System.out.println(SC.isValid());
                         ar.add(SC);
                     }
                     flag=true;
@@ -94,7 +95,7 @@ public class SudokuConfig implements Configuration{
 //        c=this.col;
 
         int n=this.grid[r][c];
-        System.out.println("in isValid(): "+r+" "+c);
+        //System.out.println("in isValid(): "+r+" "+c);
 
         //check all values in the current column, to make sure
         //that all values in this column are different
@@ -187,6 +188,10 @@ public class SudokuConfig implements Configuration{
             }
         }
         return st;
+    }
+
+    public int[][] getGrid(){
+        return this.grid;
     }
 
 
