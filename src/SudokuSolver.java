@@ -279,7 +279,7 @@ public class SudokuSolver {
 
         // attempt to solve the puzzle
         Configuration init = new SudokuConfig(simplifyPuzzle(grid));
-        //System.out.println("\nAfter simplification: \n\n"+init);
+        System.out.println("\nAfter simplification: \n\n"+init);
 
         Backtracker bt = new Backtracker(false);
         Optional<Configuration> sol = bt.solve(init);
