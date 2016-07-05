@@ -62,14 +62,13 @@ public class SudokuConfig implements Configuration{
                     for(int k=1;k<10;k++){
                         SudokuConfig SC = new SudokuConfig(this);
                         SC.grid[i][j]=k;
-                        //System.out.println("+++++++++++++++++++++++++++++");
-                        if(j==8){
-                            SC.col=0;
-                            SC.row = i+1;
-                        }
-                        else{
-                            SC.col=j+1;
-                        }
+                        //System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        SC.row=i;
+                        SC.col=j;
+//                        System.out.println("row: "+i+"    col: "+j+"    element: "+k);
+//                        System.out.println("After changing in getSucc(): "+SC.row+" "+SC.col);
+//                        System.out.println(SC);
+//                        System.out.println(SC.isValid());
                         ar.add(SC);
                     }
                     flag=true;
@@ -83,19 +82,20 @@ public class SudokuConfig implements Configuration{
     public boolean isValid(){
         int r;
         int c;
-        if(this.col==0){
-            c=8;
-            r = this.row-1;
-        }
-        else{
-            r = this.row;
-            c = this.col-1;
-        }
-//        r=this.row;
-//        c=this.col;
+//        if(this.col==0){
+//            c=8;
+//            r = this.row-1;
+//        }
+//        else{
+//            r = this.row;
+//            c = this.col-1;
+//        }
+        r=this.row;
+        c=this.col;
+        //System.out.println("this.row: "+this.row+"   this.column: "+this.col);
 
         int n=this.grid[r][c];
-        //System.out.println("in isValid(): "+r+" "+c);
+        //System.out.println("in isValid(): "+r+" "+c+"  element: "+grid[r][c]);
 
         //check all values in the current column, to make sure
         //that all values in this column are different
